@@ -5,6 +5,7 @@ rm(list=ls())
 options(stringsAsFactors = FALSE)
 iris
 
+##part 1 functions and decriptive statistics
 mean(iris$Petal.Length) #na.rm=TRUE or FALSE (logical statements) see that = sign is withing the function
 sd(iris$Petal.Length)
 var(iris$Petal.Length)
@@ -13,10 +14,13 @@ se(iris$Petal.Length)#rror
 sqrt(4)
 sqrt(iris$Petal.Length) ## note this applies the function over the whole vector
 
+
 sqrt(var(iris$Petal.Length)/length(iris$Petal.Length)) ### this is the equation to calculate standard error
 sqrt(var(iris$Petal.Length))/length(iris$Petal.Length) #just like in real math parenthesize matter
 sqrt(var(iris$Petal.Length))/length(iris$Petal.Length)) #but here they also matter to make you code run
 
+
+## write your own function
 std.err <- function(x) { #but we can make a function of it
   sqrt(var(x)/length(x))
 }
@@ -29,6 +33,17 @@ mult.sd <- function(x,y) { ##functions can have multiple areguements
 mult.sd(iris$Petal.Length,1)#68% of data
 mult.sd(iris$Petal.Length,2) #95% of data
 
+
+
+div3plus7<- function (x,y) { ## functions can be simple mathmatical opperations 
+  x/3+y
+}
+
+div3plusy(12,10) 
+
+## now everyone write their own 3 argument function (x,y,z)
+
+###### disturbiton functions
 goo<-rnorm(1000,100,20)
 
 mean(goo)
