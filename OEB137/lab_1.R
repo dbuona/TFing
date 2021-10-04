@@ -1,159 +1,63 @@
-#OEB 137 Lab 1: Introduction to R.
 
-#what we'll cover
-#0.1) What is R
-#1) assignment
-#2) Components Console, Environment, Script
-#3) packages
-#4)  working directory, read in data
-#4.1) What is a data frame? how to make one (in brief)-- we'll come back to this when we start simulating our own
-#5) Exploring your data functions
-#5.1 data classes
-#6) Exploratory plots in ggplot and plot r Why do theme
-#7) Indexing data.frame
-#8) making a new column
-#9) cleaning colnames and individual cells (which commands or ifelse, overwriting)
-#10)combining data frames
+617-312 #Basic Math
 
-##R is a community
-##R is open source
-##R is an interface
-##R is a language with many regional dialects (eg plot vs ggplot2)
-  ##HELP resources outside of R google rcheats
+x<-617 ##assign an object
+x<-312 #overwrite that
 
+jenny<-867.5309  #assign another object
+jenny
 
-
-#Part 1: R is a fancy calculator (Jim Regetz)
-
-#R remembers (assignment statements)
-617-312
-x<- 617
-x
-x <- 312 ##overwrite
-x
-#rm(x)
-
-jenny <- 867.5309
-jennyUnlisted <- jenny- x ### teach
+jennyUnlisted<-jenny-x ##assign an object based on two exisiting objects
 jennyUnlisted
 
+rm(x)
+rm(list=ls()) #removes everything from the environment
+options(stringsAsFactors = FALSE)
+#https://simplystatistics.org/2015/07/24/stringsasfactors-an-unauthorized-biography/#:~:text=The%20argument%20'stringsAsFactors'%20is%20an,argument%20also%20appears%20in%20'read.
 
-##getting started
-#Console, Environment, Script 
-rm(list=ls()) ##this clears your global environement
-options(stringsAsFactors = FALSE) ##if you care about this https://simplystatistics.org/2015/07/24/stringsasfactors-an-unauthorized-biography/#:~:text=The%20argument%20'stringsAsFactors'%20is%20an,argument%20also%20appears%20in%20'read.
-graphics.off() ## shuts down graphic devices
-##you can make a script dictionary
+install.packages("ggplot2") ##install a brand new packages
+library(ggplot2) # load the package
+require() #alternative way to load the package
 
-#### load packages
-#include functions, data, vignettes
-#install.packages("dplyr") ## first time you do it or after you update R
-library(dplyr) ## or require()
+setwd("~/Documents/git/TFing/OEB137") ## set your working director
+iris #print a pre-loaded data set
+iris2019<-iris #assign that data set a new name
 
-#have students make a folder on their desktop OEB137
-setwd("~/Desktop/OEB137")
+iris2020<-read.csv("iris2020.csv") ##read in your own data from your working directory
 
-#iris2020$Sepal.Length<-iris2019$Sepal.Length+1 ## this is what I did to make the broken data
-#iris2020$Sepal.width<-iris2019$Sepal.width*10
-#write.csv(iris2020,"iris2020.csv",row.names = FALSE)
+iris2019$Species #print a signle column (vector) from the data frame
 
-###reading in data
-iris
-iris2019<-iris
-##read in your own data
-iris2020<-read.csv(file = "iris2020.csv")
+unique(iris2019$Species) ## this function shows you all the unique values in  the "Species" column
+unique(iris2020$Species) # it can be useful for spotting typos and mistakes
 
+table(iris2020$Species) #this shows you how many cells of each unique values
 
-## some querying functions for iris2019
-head(iris2019)
-tail(iris2019)
-#View(iris)##rstudo
-ncol(iris2019)
-nrow(iris2019)
-dim(iris2019)
-table(iris$Species)
-unique(iris2019)
-colnames(iris2019)
+plot(iris$Sepal.Length~iris$Species) ### basic exploratory plot
 
-###brief interlude about class. We'll talk more about this when we model
-#also talk here about vectors,list, lists. matrices dataframe is a list of equal length vectors
-##A vector is a collection of one or more values, all of the same type
-##Lists can hold many many types of objects in one container
-# a dataframe is a list of vectors of equal length
+class(iris$Sepal.Length)## this function tells you the underlying structure of a vector
+class(iris$Species) ##note the differences
 
-class(iris2019$Species)
-class(iris2019$Sepal.Length)
+##side bar
+attach(iris2019) # you could attach data (x) 
+#which mean you dont have to referece the x$ part of the x$y statement
+Species #see?
+detach(iris2019) # I don't do this-- for further reading:
+#https://www.r-bloggers.com/to-attach-or-not-attach-that-is-the-question/
 
-plot(iris$Species)
-plot(as.numeric(iris$Species))
+colnames(iris2019) ##this function prints the column names of a data frame
 
-plot(iris$Sepal.Length)
-plot(as.integer(iris$Sepal.Length))
-plot(as.factor(iris$Sepal.Length))
+colnames(iris2020)[3] # The bracket index a specific column
+
+colnames(iris2020)[3]<-"Petal.Length" # here we reassign column 3 the proper name
+colnames(iris2020) # look its fix
+
+View(iris2019) ## This allows you to see the whole data frame,
+#or you can click on the data frame in the Global Environment and the same thing will happen
 
 
+plot(iris2019$Sepal.Width~iris2020$Sepal.Width)## We can plot columnes from two different data frames against each other
+#plots are a good way to check you data and prepare 
 
-##attach and why i dont do it https://www.r-bloggers.com/to-attach-or-not-attach-that-is-the-question/
-attach(iris2019)
-table(Species)
-detach(iris2019)
-table(iris2019$Species)
-
-
-
-##sidebar build your own df 
-observation<-c(1,2,3,4,5,6) #equivlent to
-observation2<-1:6
-observation3<-c("one","two","three","four","five","six")
-my.df<-data.frame(observation=observation,observation2=observation2,observation3=observation3)
-#query
-
-##back to iris2019 indexing
-colnames(iris2019)
-colnames(iris2019)[c(2,3)]
-iris[2,3]
-which(iris$Petal.Width == 1)
-
-##explore iris2019 data
-
-plot(iris2019$Sepal.Length~iris2019$Species)
-plot(iris2019$Sepal.Length~iris2019$Sepal.Width)
-library(ggplot2)
-ggplot(iris2019,aes(Sepal.Width,Sepal.Length))+geom_point(aes(color=Species))
-ggplot(iris2019,aes(Species,Sepal.Length))+geom_point(aes(color=Species))
-ggplot(iris2019,aes(Species,Sepal.Length))+geom_boxplot(aes(color=Species))
-
-##many tutorials tell you how to explore your data, but this will show you why you should
-
-
-##Why this matters do the same with iris2020
-ggplot(iris2020,aes(Sepal.Width,Sepal.Length))+geom_point(aes(color=Species))
-
-ggplot(iris2020,aes(Sepal.Width,Sepal.Length))+geom_point(aes(color=Species))
-
-table(iris2020$Species)
-range(iris2019$Sepal.Width)
-range(iris2020$Sepal.Width)
-
-unique(iris2020$Species)
-
-##fix the data
-iris2020$Species[which(iris2020$Species=="setoza" | iris2020$Species=="setsa")] #creak this function foen and add <-"setosa"
-
-iris2020$Sepal.Width<-iris2020$Sepal.Width/10
-
-###add a new column
-iris2020$year<-2020
-iris2019$year<-2019
-
-iris.multi<-rbind(iris2019,iris2020) ## try to combind them
-### errors are hard to understand
-
-colnames(iris2020)
-colnames(iris2019)
-colnames(iris2020)<-colnames(iris2019)
-iris.multi<-rbind(iris2019,iris2020)
-
-##next week; continue whatever we dont get through, more on building your own data
-#seq(), rep(), rnorm(). and dplyr, tidy r functions. a bit more on plotting
-
+range(iris2020$Sepal.Width)# This function give me the range of values in the vector (column)
+iris2020$Sepal.Width<-iris2020$Sepal.Width/10 ## here i overwrite the original column with values
+#that are an order of magnitude smaller

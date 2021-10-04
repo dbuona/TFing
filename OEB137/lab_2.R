@@ -1,79 +1,80 @@
-##functions     We talked a bit about vectors, object, and in doing so we encountered functions.
-#today we are going to break down what a function is in the context of distrubtions and practice writing out own
+# Hi everyone,
+# welcome to lab
+
 # housekeeping
-rm(list=ls())
-library(dplyr)
-options(stringsAsFactors = FALSE)
+rm(list=ls()) ##clears your global env
+options(stringsAsFactors = FALSE)## weird R formatting
 
-##part 1 functions and decsriptive statistics
-##go throught the parts of a function, arguements and show ? feature
-mean(iris$Petal.Length) #na.rm=TRUE or FALSE (logical statements) see that = sign is withing the function
-mydata<-c(5:10,NA,12)
-mean(mydata,na.rm=TRUE) ### explain defaults abd why they sometimes mess you up
+mean(iris$Sepal.Length)
+?mean()
+mydata<-c(5,10,30,4,NA,12)
+mean(mydata)
+mean(mydata,na.rm = TRUE)
 
-sd(iris$Petal.Length) ## more descriptive statistics
-var(iris$Petal.Length) ##""
-se(iris$Petal.Length)# there is no standard error function
-
-##but was it stanmdar error ( sqrt(varience/n)) and we can make a function
+sd(iris$Sepal.Length)
+var(iris$Sepal.Length)
+se(iris$Sepal.Length)
 
 sqrt(4)
-sqrt(iris$Petal.Length) ## note this applies the function over the whole vector
+sqrt(var(iris$Sepal.Length)/length(iris$Sepal.Length))
+sqrt(var(iris$Sepal.Length))/length(iris$Sepal.Length)
 
-###why parenthesizes matter
-sqrt(var(iris$Petal.Length)/length(iris$Petal.Length)) ### this is the equation to calculate standard error
-sqrt(var(iris$Petal.Length))/length(iris$Petal.Length) #just like in real math parenthesize matter, and will change your order of opporations
-sqrt(var(iris$Petal.Length))/length(iris$Petal.Length)) #but here they also matter to make you code run
+##writing your own standard error function
 
-
-## part2 write your own function
-std.err <- function(x) { #but we can make a function of it
+std.err<- function(x){
   sqrt(var(x)/length(x))
 }
 
-std.err(iris$Petal.Length) ##see?
+std.err(iris$Sepal.Length)
+std.err(iris$Petal.Length)     
 
-mult.sd <- function(x,y) { ##functions can have multiple areguements
+mult.sd<- function(x,y) {
   sd(x)*y
 }
-mult.sd(iris$Petal.Length,1)#68% of data
-mult.sd(iris$Petal.Length,2) #95% of data
 
+mult.sd(iris$Sepal.Length,1)
+mult.sd(iris$Sepal.Length,2)
 
-
-div3plusy<- function (x,y) { ## functions can be simple mathmatical opperations 
-  x/3+y
+div3plusy<-function(x,y){
+  (x/3)+y
 }
 
-div3plusy(12,10) 
+div3plusy(12,10)
 
-## now everyone write their own 3 argument function (x,y,z)
+##assignment make a function with 3 arguements
+makeafunction<- function(x,y,z){
+}
 
+mean(iris$Sepal.Length)
+unique(iris$Species)
 
-### so far we've only looked at the full data but what if we are interested in differnces amoun species
-?aggregate()
 aggregate(Petal.Length~Species,data=iris,mean)
-## alt specification
-aggregate(x=iris$Petal.Length,by=list(iris$Species),FUN=mean)
-aggregate(Petal.Length~Species,data=iris,std.err) ## you can add your own functiona s long as you've stored it in the global environment
+aggregate(x=iris$Petal.Length,by=list(iris$Species),mean)
 
-###unique identifiers
+aggregate(Petal.Length~Species,data=iris,std.err)
+
+install.packages("dplyr")
+library(dplyr)
+
+iris %>% 
+  group_by(Species) %>%  
+  summarise(mean.petal.length=mean(Petal.Length))
+
+head(iris)
 iris$plot<-rep(1:5,each=5)
-aggregate(Petal.Length~plot,data=iris,mean)#### this mixes species in the plots
-iris$ID<-paste(iris$Species,iris$plot) ## makea  unique sp plot label
+?rep()
+head(iris,10)
+aggregate(Petal.Length~Species+plot,data=iris,mean)
+iris$ID<-paste(iris$Species,iris$plot)
+head(iris)
 
-aggregate(Petal.Length~ID,data=iris,mean)
-
-##visualize distrubtions
+plot(iris$Sepal.Length~iris$Sepal.Width)
 hist(iris$Sepal.Width)
 
+install.packages("ggplot2")
+library(ggplot2)
 
-## if there is time, comparison of  tidyverse to aggreegate
-aggregate(Petal.Length~Species,data=iris,mean)
-
-
-iris.goo<-iris %>% group_by(Species) %>% summarise(mean.petal.length=mean(Petal.Length))
-###ggplot to hist
-
-
+ggplot(iris,aes(Sepal.Width,Sepal.Length))+
+  geom_point(aes(color=Species))+
+  geom_smooth(method="lm",aes(color=Species))
 

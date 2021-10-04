@@ -24,7 +24,7 @@ aggregate(dater$Diam,by=list(dater$site),FUN=Gmean)
 
 
 dater$ID<-paste(dater$site,dater$plot, sep="_") ## paste
-
+?prod()
 table(dater$ID)##patience
 
 hist(dater$Diam) ## histogram 
